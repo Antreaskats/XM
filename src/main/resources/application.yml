@@ -1,0 +1,10 @@
+spring:
+  redis:
+    host: redis
+    port: 6379
+  file:
+    path: /app/prices
+springdoc:
+  swagger-ui:
+    deepLinking: true
+    showCommonExtensions: true

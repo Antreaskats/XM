@@ -1,0 +1,113 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /cryptos/normalized:
+    get:
+      tags:
+      - crypto-controller
+      summary: Calculates the normalized range for each crypto
+      operationId: cryptoNormalizedRangeDetails
+      responses:
+        "409":
+          description: Exception thrown when no cryptos were found
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: normalized range for calculated
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CryptoNormalizedRange"
+    post:
+      tags:
+      - crypto-controller
+      summary: Returns the highest normalized range and crypto name for a specific
+        day
+      operationId: highestNormalizedThisDay
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DateRequestDTO"
+        required: true
+      responses:
+        "409":
+          description: Exception thrown if no normalized range found for this day
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: HighestNormalizedRange for this day calculated
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CryptoNormalizedRange"
+  /cryptos/details/{cryptoName}:
+    get:
+      tags:
+      - crypto-controller
+      summary: Returns Max/Min/Oldest/Newest for a specific crypto
+      operationId: cryptoDetails
+      parameters:
+      - name: cryptoName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "409":
+          description: Exception thrown if crypto is not supported
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+        "200":
+          description: Max/Min/Oldest/Newest values returned
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/CryptoDetails"
+components:
+  schemas:
+    DateRequestDTO:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+    CryptoNormalizedRange:
+      type: object
+      properties:
+        name:
+          type: string
+        normalizedRange:
+          type: number
+    CryptoDetails:
+      type: object
+      properties:
+        cryptoName:
+          type: string
+        oldest:
+          type: number
+        newest:
+          type: number
+        min:
+          type: number
+        max:
+          type: number
